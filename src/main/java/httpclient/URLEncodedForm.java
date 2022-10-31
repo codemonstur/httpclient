@@ -6,7 +6,7 @@ import java.net.http.HttpRequest.BodyPublishers;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-public final class URLEncodedForm {
+public final class URLEncodedForm implements RequestBody {
 
     public static URLEncodedForm newFormBody() {
         return new URLEncodedForm();
@@ -27,7 +27,7 @@ public final class URLEncodedForm {
         return BodyPublishers.ofString(builder.toString());
     }
 
-    public static String encodeUrl(final String value) {
+    private static String encodeUrl(final String value) {
         return value != null ? URLEncoder.encode(value, UTF_8) : "";
     }
 

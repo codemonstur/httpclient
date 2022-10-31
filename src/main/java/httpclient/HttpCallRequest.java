@@ -97,9 +97,9 @@ public class HttpCallRequest<T extends HttpCallRequest<T>> {
         this.body = body;
         return (T) this;
     }
-    public T body(final URLEncodedForm form) {
-        this.headers.putIfAbsent("Content-Type", form.getHeader());
-        this.body = form.build();
+    public T body(final RequestBody requestBody) {
+        this.headers.putIfAbsent("Content-Type", requestBody.getHeader());
+        this.body = requestBody.build();
         return (T) this;
     }
 
