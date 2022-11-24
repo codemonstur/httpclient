@@ -1,5 +1,5 @@
 
-[![GitHub Release](https://img.shields.io/github/release/codemonstur/simplexml.svg)](https://github.com/codemonstur/httpclient/releases)
+[![GitHub Release](https://img.shields.io/github/release/codemonstur/httpclient.svg)](https://github.com/codemonstur/httpclient/releases)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.codemonstur/httpclient/badge.svg)](http://mvnrepository.com/artifact/com.github.codemonstur/httpclient)
 [![MIT Licence](https://badges.frapsoft.com/os/mit/mit.svg?v=103)](https://opensource.org/licenses/mit-license.php)
 
