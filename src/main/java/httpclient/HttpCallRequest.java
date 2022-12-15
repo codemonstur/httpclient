@@ -111,10 +111,9 @@ public class HttpCallRequest<T extends HttpCallRequest<T>> {
         try {
             final var uri = URI.create(scheme + "://" + hostname + getPort() + path);
             final var request = HttpRequest.newBuilder()
-                .uri(uri).method(method, body == null ? noBody() : body)
-                .headers(getHeaders())
-                .build();
-            return http.send(request, handler);
+                .uri(uri).method(method, body == null ? noBody() : body);
+            if (!headers.isEmpty()) request.headers(getHeaders());
+            return http.send(request.build(), handler);
         } catch (final InterruptedException e) {
             throw new IOException("Interrupted during IO", e);
         }
