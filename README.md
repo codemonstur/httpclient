@@ -1,4 +1,6 @@
 
+[![GitHub Release](https://img.shields.io/github/release/codemonstur/httpclient.svg)](https://github.com/codemonstur/httpclient/releases)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.codemonstur/httpclient/badge.svg)](http://mvnrepository.com/artifact/com.github.codemonstur/httpclient)
 [![MIT Licence](https://badges.frapsoft.com/os/mit/mit.svg?v=103)](https://opensource.org/licenses/mit-license.php)
 
 # HttpClient
@@ -22,3 +24,10 @@ With some tweaking you can get this:
             .fetchBodyInto(RecaptchaResponse.class);
     }
 
+It's in Maven Central
+
+    <dependency>
+        <groupId>com.github.codemonstur</groupId>
+        <artifactId>httpclient</artifactId>
+        <version>1.0.0</version>
+    </dependency>
