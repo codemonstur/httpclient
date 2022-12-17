@@ -112,7 +112,8 @@ public class HttpCallRequest<T extends HttpCallRequest<T>> {
             final var uri = URI.create(scheme + "://" + hostname + getPort() + path);
             final var request = HttpRequest.newBuilder()
                 .uri(uri).method(method, body == null ? noBody() : body);
-            if (!headers.isEmpty()) request.headers(getHeaders());
+            for (final var entry : headers.entrySet())
+                request.header(entry.getKey(), entry.getValue());
             return http.send(request.build(), handler);
         } catch (final InterruptedException e) {
             throw new IOException("Interrupted during IO", e);
@@ -121,13 +122,6 @@ public class HttpCallRequest<T extends HttpCallRequest<T>> {
 
     private String getPort() {
         return port == -1 ? "" : ":" + port;
-    }
-    private String[] getHeaders() {
-        final var headers = new String[this.headers.size()];
-        int i = 0; for (final var entry : this.headers.entrySet()) {
-            headers[i++] = entry.getKey() + ": " + entry.getValue();
-        }
-        return headers;
     }
 
 }

@@ -23,6 +23,7 @@ public enum CaptchaHttp {;
             .verifyNotServerError()
             .verifySuccess()
             .fetchBodyInto(RecaptchaResponse.class);
+        System.out.println(response.success);
     }
 
 }
