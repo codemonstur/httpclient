@@ -29,5 +29,5 @@ It's in Maven Central
     <dependency>
         <groupId>com.github.codemonstur</groupId>
         <artifactId>httpclient</artifactId>
-        <version>1.0.0</version>
+        <version>1.0.2</version>
     </dependency>
