@@ -93,6 +93,9 @@ public class HttpCallRequest<T extends HttpCallRequest<T>> {
         this.headers.put("Content-Type", type);
         return (T) this;
     }
+    public T body(final String body) {
+        return body(HttpRequest.BodyPublishers.ofString(body));
+    }
     public T body(final BodyPublisher body) {
         this.body = body;
         return (T) this;

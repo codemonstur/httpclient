@@ -13,7 +13,7 @@ import static java.net.http.HttpResponse.BodyHandlers.ofString;
 public final class ExtendedHttpCaller {
 
     private static final HttpClient HTTP_CLIENT = HttpClient.newHttpClient();
-    private static final Gson GSON = new Gson();
+    public static final Gson GSON = new Gson();
 
     public static CustomHttpCallRequest newHttpCall() {
         return new CustomHttpCallRequest();
@@ -27,12 +27,12 @@ public final class ExtendedHttpCaller {
             return new CustomHttpCallResponse(send(ofString()));
         }
     }
-    public static class CustomHttpCallResponse extends HttpCallResponse<CustomHttpCallResponse> {
+    public static class CustomHttpCallResponse extends HttpCallResponse<CustomHttpCallResponse, String> {
         public CustomHttpCallResponse(final HttpResponse<String> response) {
             super(response);
         }
         public <T> T fetchBodyInto(final Class<T> clazz) throws IOException {
-            return GSON.fromJson(fetchBodyAsString(), clazz);
+            return GSON.fromJson(fetchBody(), clazz);
         }
     }
 }

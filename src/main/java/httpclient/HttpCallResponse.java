@@ -4,21 +4,18 @@ import java.io.IOException;
 import java.net.http.HttpResponse;
 import java.util.function.Function;
 
-public class HttpCallResponse<T extends HttpCallResponse<T>> {
+public class HttpCallResponse<T extends HttpCallResponse<T, B>, B> {
 
-    public interface Serializer {
-        <U> U fromData(String data, Class<U> clazz);
+    public interface Serializer<C> {
+        <U> U fromData(C data, Class<U> clazz);
     }
     public interface Rule {
         void verify(HttpResponse<?> response) throws IOException;
     }
-    public interface HttpBodyParser<U> {
-        U convert(String body) throws IOException;
-    }
 
-    private final HttpResponse<String> response;
+    private final HttpResponse<B> response;
 
-    public HttpCallResponse(final HttpResponse<String> response) {
+    public HttpCallResponse(final HttpResponse<B> response) {
         this.response = response;
     }
 
@@ -53,13 +50,13 @@ public class HttpCallResponse<T extends HttpCallResponse<T>> {
         return (T) this;
     }
 
-    public <U> U fetchBodyInto(final Serializer serializer, final Class<U> clazz) throws IOException {
-        return serializer.fromData(fetchBodyAsString(), clazz);
+    public <U> U fetchBodyInto(final Serializer<B> serializer, final Class<U> clazz) throws IOException {
+        return serializer.fromData(response.body(), clazz);
     }
-    public <U> U fetchBodyWith(final HttpBodyParser<U> converter) throws IOException {
-        return converter.convert(fetchBodyAsString());
+    public <U> U fetchBodyWith(final Function<B, U> converter) throws IOException {
+        return converter.apply(response.body());
     }
-    public String fetchBodyAsString() throws IOException {
+    public B fetchBody() throws IOException {
         return response.body();
     }
 
