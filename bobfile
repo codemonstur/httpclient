@@ -21,7 +21,7 @@ enablePreview: false
 dependencies:
   - repository: junit:junit:4.13.2
     scope: test
-  - repository: com.google.code.gson:gson:2.10
+  - repository: com.google.code.gson:gson:2.10.1
     scope: test
 
 install
