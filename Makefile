@@ -21,7 +21,7 @@ clean:
 
 build:
 	@echo "[$(NAME)] Building"
-	@mvn -Dorg.slf4j.simpleLogger.defaultLogLevel=warn -DskipTests=true clean package
+	@mvn -Dorg.slf4j.simpleLogger.defaultLogLevel=warn -DskipTests=true -s src/docs/settings.xml clean package
 
 check-versions:
 	@mvn versions:display-dependency-updates
