@@ -2,8 +2,7 @@ package httpclient;
 
 import java.io.IOException;
 
-import static httpclient.ExtendedHttpCaller.GSON;
-import static httpclient.ExtendedHttpCaller.newHttpCall;
+import static httpclient.Utils.newHttpCall;
 import static httpclient.URLEncodedForm.newFormBody;
 
 public enum CaptchaHttp {;

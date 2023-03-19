@@ -11,11 +11,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static java.net.http.HttpRequest.BodyPublishers.noBody;
+import static java.net.http.HttpResponse.BodyHandlers.ofByteArray;
 import static java.net.http.HttpResponse.BodyHandlers.ofString;
 
-public class HttpCallRequest<T extends HttpCallRequest<T>> {
+public final class HttpCallRequest {
 
     private final HttpClient http;
+    private final Serializers serializers;
+
     private String scheme = "https";
     private String hostname;
     private int port = -1;
@@ -24,90 +27,91 @@ public class HttpCallRequest<T extends HttpCallRequest<T>> {
     private Map<String, String> headers = new HashMap<>();
     private BodyPublisher body;
 
-    public HttpCallRequest(final HttpClient http) {
+    public HttpCallRequest(final HttpClient http, final Serializers serializers) {
         this.http = http;
+        this.serializers = serializers;
     }
 
-    public T scheme(final String scheme) {
+    public HttpCallRequest scheme(final String scheme) {
         this.scheme = scheme;
-        return (T) this;
+        return this;
     }
-    public T hostname(final String hostname) {
+    public HttpCallRequest hostname(final String hostname) {
         this.hostname = hostname;
-        return (T) this;
+        return this;
     }
-    public T port(final int port) {
+    public HttpCallRequest port(final int port) {
         this.port = port;
-        return (T) this;
+        return this;
     }
-    public T uri(final String uri) {
+    public HttpCallRequest uri(final String uri) {
         return uri(URI.create(uri));
     }
-    public T uri(final URI uri) {
+    public HttpCallRequest uri(final URI uri) {
         this.scheme = uri.getScheme();
         this.hostname = uri.getHost();
         this.port = uri.getPort();
         this.path = uri.getPath();
-        return (T) this;
+        return this;
     }
-    public T method(final String method, final String path) {
+    public HttpCallRequest method(final String method, final String path) {
         this.method = method;
         this.path = path;
-        return (T) this;
+        return this;
     }
-    public T get(final String path) {
+    public HttpCallRequest get(final String path) {
         this.method = "GET";
         this.path = path;
-        return (T) this;
+        return this;
     }
-    public T delete(final String path) {
+    public HttpCallRequest delete(final String path) {
         this.method = "DELETE";
         this.path = path;
-        return (T) this;
+        return this;
     }
-    public T head(final String path) {
+    public HttpCallRequest head(final String path) {
         this.method = "HEAD";
         this.path = path;
-        return (T) this;
+        return this;
     }
-    public T post(final String path) {
+    public HttpCallRequest post(final String path) {
         this.method = "POST";
         this.path = path;
-        return (T) this;
+        return this;
     }
-    public T put(final String path) {
+    public HttpCallRequest put(final String path) {
         this.method = "PUT";
         this.path = path;
-        return (T) this;
+        return this;
     }
-    public T patch(final String path) {
+    public HttpCallRequest patch(final String path) {
         this.method = "PATCH";
         this.path = path;
-        return (T) this;
+        return this;
     }
-    public T header(final String name, final String value) {
+    public HttpCallRequest header(final String name, final String value) {
         this.headers.put(name, value);
-        return (T) this;
+        return this;
     }
-    public T contentType(final String type) {
+    public HttpCallRequest contentType(final String type) {
         this.headers.put("Content-Type", type);
-        return (T) this;
+        return this;
     }
-    public T body(final String body) {
+    public HttpCallRequest body(final String body) {
         return body(HttpRequest.BodyPublishers.ofString(body));
     }
-    public T body(final BodyPublisher body) {
+    public HttpCallRequest body(final BodyPublisher body) {
         this.body = body;
-        return (T) this;
+        return this;
     }
-    public T body(final RequestBody requestBody) {
+    public HttpCallRequest body(final RequestBody requestBody) {
         this.headers.putIfAbsent("Content-Type", requestBody.getHeader());
         this.body = requestBody.build();
-        return (T) this;
+        return this;
     }
 
     public HttpCallResponse execute() throws IOException {
-        return new HttpCallResponse(send(ofString()));
+        return new HttpCallResponse(serializers, send(ofByteArray()));
     }
 
     public <U> HttpResponse<U> send(final BodyHandler<U> handler) throws IOException {

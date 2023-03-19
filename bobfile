@@ -2,18 +2,12 @@ include https://raw.githubusercontent.com/codemonstur/bobfiles/master/foss-lib-g
 
 vendor: com.github.codemonstur
 name: httpclient
-version: 1.0.3
+version: 1.0.4
 packaging: jar
 release: 17
 description: A wrapper around HttpClient.
-url: https://github.com/codemonstur/httpclient
-scm:
-  connection: scm:git:https://github.com/codemonstur/httpclient.git
-  developerConnection: scm:git:https://github.com/codemonstur/httpclient.git
-  url: https://github.com/codemonstur/httpclient
 license:
   name: MIT
-  url: https://opensource.org/licenses/MIT
 developer:
   name: Jurgen Voorneveld
   email: jegvoorneveld@gmail.com
@@ -23,14 +17,3 @@ dependencies:
     scope: test
   - repository: com.google.code.gson:gson:2.10.1
     scope: test
-
-install
-    cd ../common-server && mvn clean install
-    mvn clean install
-
-deploy-maven
-    info [${PROJECT_NAME}] Uploading to MavenCentral
-    jar-sources
-    jar-javadoc
-    deploy-maven-central
-    sed -E -i 's/<version>[0-9.]+<\/version>/<version>${PROJECT_VERSION}<\/version>/g' README.md
