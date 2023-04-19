@@ -27,6 +27,10 @@ public final class HttpCallRequest {
     private Map<String, String> headers = new HashMap<>();
     private BodyPublisher body;
 
+    public HttpCallRequest(final HttpClient http) {
+        this(http, new Serializers.Builder().build());
+    }
+
     public HttpCallRequest(final HttpClient http, final Serializers serializers) {
         this.http = http;
         this.serializers = serializers;

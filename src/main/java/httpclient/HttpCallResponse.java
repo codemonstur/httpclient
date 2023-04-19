@@ -63,8 +63,8 @@ public class HttpCallResponse {
     public <U> U fetchBodyInto(final Serializer serializer, final Class<U> clazz) throws IOException {
         return serializer.fromData(response.body(), clazz);
     }
-    public <U> U fetchBodyWith(final Function<byte[], U> converter) throws IOException {
-        return converter.apply(response.body());
+    public <U> U fetchBodyWith(final ResponseBodyParser<U> converter) throws IOException {
+        return converter.parse(response.body());
     }
     public byte[] fetchBody() throws IOException {
         return response.body();
