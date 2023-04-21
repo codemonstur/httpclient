@@ -58,9 +58,17 @@ public final class HttpCallRequest {
         this.path = uri.getPath();
         return this;
     }
+    public HttpCallRequest method(final String method) {
+        this.method = method;
+        return this;
+    }
     public HttpCallRequest method(final String method, final String path) {
         this.method = method;
         this.path = path;
+        return this;
+    }
+    public HttpCallRequest get() {
+        this.method = "GET";
         return this;
     }
     public HttpCallRequest get(final String path) {
@@ -68,9 +76,17 @@ public final class HttpCallRequest {
         this.path = path;
         return this;
     }
+    public HttpCallRequest delete() {
+        this.method = "DELETE";
+        return this;
+    }
     public HttpCallRequest delete(final String path) {
         this.method = "DELETE";
         this.path = path;
+        return this;
+    }
+    public HttpCallRequest head() {
+        this.method = "HEAD";
         return this;
     }
     public HttpCallRequest head(final String path) {
@@ -78,14 +94,26 @@ public final class HttpCallRequest {
         this.path = path;
         return this;
     }
+    public HttpCallRequest post() {
+        this.method = "POST";
+        return this;
+    }
     public HttpCallRequest post(final String path) {
         this.method = "POST";
         this.path = path;
         return this;
     }
+    public HttpCallRequest put() {
+        this.method = "PUT";
+        return this;
+    }
     public HttpCallRequest put(final String path) {
         this.method = "PUT";
         this.path = path;
+        return this;
+    }
+    public HttpCallRequest patch() {
+        this.method = "PATCH";
         return this;
     }
     public HttpCallRequest patch(final String path) {
