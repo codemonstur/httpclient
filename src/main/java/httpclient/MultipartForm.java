@@ -4,7 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.http.HttpRequest;
 import java.util.HashMap;
-import java.util.HexFormat;
 import java.util.Random;
 
 import static java.nio.charset.StandardCharsets.US_ASCII;
@@ -44,7 +43,17 @@ public final class MultipartForm implements RequestBody {
     private static String randomHexData(final int length) {
         final var array = new byte[length];
         new Random().nextBytes(array);
-        return HexFormat.of().formatHex(array);
+        return encodeHex(array);
+    }
+    private static final char[] HEX_CHARS = "0123456789abcdef".toCharArray();
+    private static String encodeHex(final byte[] bytes) {
+        final var output = new char[bytes.length * 2];
+        for (int i = 0; i < bytes.length; i++) {
+            final int v = bytes[i] & 0xFF;
+            output[i * 2    ] = HEX_CHARS[v >>> 4];
+            output[i * 2 + 1] = HEX_CHARS[v & 0x0F];
+        }
+        return new String(output);
     }
 
     private static final byte[] CRLF = "\r\n".getBytes(US_ASCII);

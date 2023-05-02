@@ -4,7 +4,7 @@ vendor: com.github.codemonstur
 name: httpclient
 version: 1.0.6
 packaging: jar
-release: 17
+release: 11
 description: A wrapper around HttpClient.
 license:
   name: MIT

@@ -10,7 +10,9 @@ public enum CaptchaHttp {;
     // challenge_ts is the timestamp of the challenge load (ISO format yyyy-MM-dd'T'HH:mm:ssZZ)
     // There is an array of string called 'app.error-codes'. It's optional, I left it out because the dash
     // gets in the way
-    record RecaptchaResponse(boolean success, String challenge_ts, String hostname) {}
+    static class RecaptchaResponse {
+        boolean success; String challenge_ts; String hostname;
+    }
 
     public static void main(final String... args) throws IOException {
         final var response = newHttpCall()

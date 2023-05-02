@@ -24,10 +24,11 @@ public final class Serializers {
     }
 
     public Serializer getFromFormat(final Format format) {
-        return switch (format) {
-            case json -> this.json;
-            case xml -> this.xml;
-        };
+        switch (format) {
+            case json: return this.json;
+            case xml: return this.xml;
+            default: throw new IllegalArgumentException("Unknown format: " + format);
+        }
     }
 
     public Serializer getFromHeader(final String contentType) {
