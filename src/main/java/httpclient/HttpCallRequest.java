@@ -10,14 +10,16 @@ import java.net.http.HttpResponse.BodyHandler;
 import java.util.HashMap;
 import java.util.Map;
 
+import static httpclient.HeaderStrategy.SILENT_REMOVE_NULL_HEADERS;
+import static httpclient.HeaderStrategy.THROW_EXCEPTION_ON_NULL;
 import static java.net.http.HttpRequest.BodyPublishers.noBody;
 import static java.net.http.HttpResponse.BodyHandlers.ofByteArray;
-import static java.net.http.HttpResponse.BodyHandlers.ofString;
 
 public final class HttpCallRequest {
 
     private final HttpClient http;
     private final Serializers serializers;
+    private final boolean silentRemoveNullHeaders;
 
     private String scheme = "https";
     private String hostname;
@@ -28,12 +30,17 @@ public final class HttpCallRequest {
     private BodyPublisher body;
 
     public HttpCallRequest(final HttpClient http) {
-        this(http, new Serializers.Builder().build());
+        this(http, new Serializers.Builder().build(), THROW_EXCEPTION_ON_NULL);
     }
 
-    public HttpCallRequest(final HttpClient http, final Serializers serializers) {
+    public HttpCallRequest(final HttpClient http, final HeaderStrategy silentRemoveNullHeaders) {
+        this(http, new Serializers.Builder().build(), silentRemoveNullHeaders);
+    }
+
+    public HttpCallRequest(final HttpClient http, final Serializers serializers, final HeaderStrategy headerStrategy) {
         this.http = http;
         this.serializers = serializers;
+        this.silentRemoveNullHeaders = headerStrategy == SILENT_REMOVE_NULL_HEADERS;
     }
 
     public HttpCallRequest scheme(final String scheme) {
@@ -122,6 +129,14 @@ public final class HttpCallRequest {
         return this;
     }
     public HttpCallRequest header(final String name, final String value) {
+        if (name == null || name.isEmpty()) {
+            if (silentRemoveNullHeaders) return this;
+            else throw new IllegalArgumentException("Header name is null or empty");
+        }
+        if (value == null) {
+            if (silentRemoveNullHeaders) return this;
+            else throw new IllegalArgumentException("Header value for '" + name + "' is null");
+        }
         this.headers.put(name, value);
         return this;
     }
