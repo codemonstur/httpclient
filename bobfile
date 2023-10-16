@@ -2,7 +2,7 @@ include https://raw.githubusercontent.com/codemonstur/bobfiles/master/foss-lib-g
 
 vendor: com.github.codemonstur
 name: httpclient
-version: 1.2.0
+version: 1.2.1
 packaging: jar
 release: 11
 description: A wrapper around HttpClient.
