@@ -7,6 +7,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpRequest.BodyPublisher;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandler;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,9 +26,11 @@ public final class HttpCallRequest {
     private String hostname;
     private int port = -1;
     private String path;
+    private String query;
     private String method = "GET";
     private Map<String, String> headers = new HashMap<>();
     private BodyPublisher body;
+    private Duration timeout;
 
     public HttpCallRequest(final HttpClient http) {
         this(http, new Serializers.Builder().build(), THROW_EXCEPTION_ON_NULL);
@@ -62,7 +65,10 @@ public final class HttpCallRequest {
         this.scheme = uri.getScheme();
         this.hostname = uri.getHost();
         this.port = uri.getPort();
-        this.path = uri.getPath();
+        // raw variants: the path/query must reach the server exactly as written,
+        // decoding here would make the client double-encode on send
+        this.path = uri.getRawPath();
+        this.query = uri.getRawQuery();
         return this;
     }
     public HttpCallRequest method(final String method) {
@@ -137,11 +143,16 @@ public final class HttpCallRequest {
             if (silentRemoveNullHeaders) return this;
             else throw new IllegalArgumentException("Header value for '" + name + "' is null");
         }
+        // header names are case-insensitive: replace any casing variant already set
+        this.headers.keySet().removeIf(existing -> existing.equalsIgnoreCase(name));
         this.headers.put(name, value);
         return this;
     }
     public HttpCallRequest contentType(final String type) {
-        this.headers.put("Content-Type", type);
+        return header("Content-Type", type);
+    }
+    public HttpCallRequest timeout(final Duration timeout) {
+        this.timeout = timeout;
         return this;
     }
     public HttpCallRequest body(final String body) {
@@ -152,7 +163,9 @@ public final class HttpCallRequest {
         return this;
     }
     public HttpCallRequest body(final RequestBody requestBody) {
-        this.headers.putIfAbsent("Content-Type", requestBody.getHeader());
+        // last call wins: the body's own content-type carries the multipart
+        // boundary, an earlier contentType() must never discard it
+        header("Content-Type", requestBody.getHeader());
         this.body = requestBody.build();
         return this;
     }
@@ -163,19 +176,28 @@ public final class HttpCallRequest {
 
     public <U> HttpResponse<U> send(final BodyHandler<U> handler) throws IOException {
         try {
-            final var uri = URI.create(scheme + "://" + hostname + getPort() + path);
-            final var request = HttpRequest.newBuilder()
-                .uri(uri).method(method, body == null ? noBody() : body);
+            final var builder = HttpRequest.newBuilder()
+                .uri(URI.create(scheme + "://" + hostname + getPort() + getPath() + getQuery()))
+                .method(method, body == null ? noBody() : body);
+            if (timeout != null) builder.timeout(timeout);
             for (final var entry : headers.entrySet())
-                request.header(entry.getKey(), entry.getValue());
-            return http.send(request.build(), handler);
+                builder.header(entry.getKey(), entry.getValue());
+            return http.send(builder.build(), handler);
         } catch (final InterruptedException e) {
+            Thread.currentThread().interrupt();
             throw new IOException("Interrupted during IO", e);
         }
     }
 
     private String getPort() {
         return port == -1 ? "" : ":" + port;
+    }
+    private String getPath() {
+        if (path == null || path.isEmpty()) return "";
+        return path.startsWith("/") ? path : "/" + path;
+    }
+    private String getQuery() {
+        return query == null || query.isEmpty() ? "" : "?" + query;
     }
 
 }

@@ -9,9 +9,6 @@ import java.util.Random;
 import static java.nio.charset.StandardCharsets.US_ASCII;
 
 // Mostly works. Couple of unclear weird stuff:
-// - What am I supposed to do with the name of a key? What if it contains double
-//   quotes? Is there an escaping mechanism? What if it contains a new line?
-//   This thing is totally vulnerable to header injection this way.
 // - I've guessed that the encoding for the text is US-ASCII. But I can't find
 //   any official documentation saying that it is.
 // - I guessed and found some references here and there that the new lines are
@@ -30,14 +27,22 @@ public final class MultipartForm implements RequestBody {
     private String boundary = null;
 
     public MultipartForm add(final String key, final byte[] value) {
+        // the key goes into a header line verbatim: quotes or newlines would
+        // break the part framing or inject extra part headers
+        if (key == null || key.indexOf('\r') >= 0 || key.indexOf('\n') >= 0 || key.indexOf('"') >= 0)
+            throw new IllegalArgumentException("Invalid form field name: " + key);
         data.put(key, value);
         return this;
     }
 
     @Override
     public String getHeader() {
+        return "multipart/form-data; boundary=" + ensureBoundary();
+    }
+
+    private String ensureBoundary() {
         if (boundary == null) boundary = "----" + randomHexData(20);
-        return "multipart/form-data; boundary=" + boundary;
+        return boundary;
     }
 
     private static String randomHexData(final int length) {
@@ -60,18 +65,15 @@ public final class MultipartForm implements RequestBody {
     @Override
     public HttpRequest.BodyPublisher build() {
         final var out = new ByteArrayOutputStream();
-        final var boundaryBytes = ("--" + boundary).getBytes(US_ASCII);
+        final var boundaryBytes = ("--" + ensureBoundary()).getBytes(US_ASCII);
         try {
             out.write(boundaryBytes);
             for (final var entry : data.entrySet()) {
                 out.write(CRLF);
                 out.write(("Content-Disposition: form-data; name=\"" + entry.getKey() + "\"").getBytes(US_ASCII));
                 out.write(CRLF);
-                final byte[] value = entry.getValue();
-                out.write(("Content-Length: " + value.length).getBytes(US_ASCII));
                 out.write(CRLF);
-                out.write(CRLF);
-                out.write(value);
+                out.write(entry.getValue());
                 out.write(CRLF);
                 out.write(boundaryBytes);
             }

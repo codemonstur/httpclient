@@ -32,7 +32,13 @@ public final class Serializers {
     }
 
     public Serializer getFromHeader(final String contentType) {
-        return types.get(contentType);
+        if (contentType == null) return null;
+        final var serializer = types.get(contentType);
+        if (serializer != null) return serializer;
+        // responses usually append parameters ("application/json; charset=utf-8")
+        // or vary casing: match on the bare media type
+        final var mediaType = contentType.split(";")[0].trim().toLowerCase();
+        return types.get(mediaType);
     }
 
     public static class Builder {
@@ -49,6 +55,7 @@ public final class Serializers {
         }
         public Builder xml(final Serializer xml) {
             this.xml = xml;
+            this.types.put("application/xml", xml);
             return this;
         }
         public Builder type(final String type, final Serializer serializer) {

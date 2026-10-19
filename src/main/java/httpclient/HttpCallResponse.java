@@ -43,8 +43,13 @@ public class HttpCallResponse {
         return this;
     }
     public HttpCallResponse verifySuccess(final Function<HttpResponse<?>, ? extends IOException> supplier) throws IOException {
-        if (response.statusCode() < 200 || response.statusCode() > 299)
-            throw supplier.apply(response);
+        if (response.statusCode() < 200 || response.statusCode() > 299) {
+            final var exception = supplier.apply(response);
+            // a null from the supplier would make "throw null" surface as a bare NPE
+            throw exception != null
+                ? exception
+                : new IOException("Wrong status code. Expected 2XX, but was " + response.statusCode());
+        }
         return this;
     }
 
