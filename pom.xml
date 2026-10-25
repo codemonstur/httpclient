@@ -6,7 +6,7 @@
     <version>1.2.2</version>
 
     <name>${project.groupId}:${project.artifactId}</name>
-    <description>General utilities</description>
+    <description>A wrapper around HttpClient</description>
     <url>https://github.com/codemonstur/httpclient</url>
 
     <licenses>
@@ -34,13 +34,14 @@
 
     <properties>
         <module.name>com.github.codemonstur.httpclient</module.name>
+
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <maven.version>[3.6.3,)</maven.version>
         <maven.compiler.release>17</maven.compiler.release>
+        <maven.version>[3.6.3,)</maven.version>
 
         <version.library.gson>2.10.1</version.library.gson>
-        <version.library.junit>4.13.2</version.library.junit>
+        <version.library.junit>6.1.3</version.library.junit>
 
         <version.plugin.check-cves>1.1.0</version.plugin.check-cves>
         <version.plugin.codegrade>0.2.0</version.plugin.codegrade>
@@ -57,8 +58,8 @@
     <dependencies>
 
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
             <version>${version.library.junit}</version>
             <scope>test</scope>
         </dependency>
