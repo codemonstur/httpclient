@@ -13,7 +13,7 @@ developer:
   email: jegvoorneveld@gmail.com
 enablePreview: false
 dependencies:
-  - repository: junit:junit:4.13.2
+  - repository: org.junit.jupiter:junit-jupiter:6.1.3
     scope: test
   - repository: com.google.code.gson:gson:2.10.1
     scope: test
