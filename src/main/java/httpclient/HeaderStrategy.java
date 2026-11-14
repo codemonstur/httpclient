@@ -1,5 +1,14 @@
 package httpclient;
 
+/**
+ * The {@code HeaderStrategy} enum.
+ */
 public enum HeaderStrategy {
-    SILENT_REMOVE_NULL_HEADERS, THROW_EXCEPTION_ON_NULL
+    /**
+     * The {@code SILENT_REMOVE_NULL_HEADERS} constant.
+     */
+    SILENT_REMOVE_NULL_HEADERS, /**
+     * The {@code THROW_EXCEPTION_ON_NULL} constant.
+     */
+    THROW_EXCEPTION_ON_NULL
 }

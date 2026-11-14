@@ -21,11 +21,21 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
 // - When you have a content-length header and there are some left over bytes
 //   still there after you have read the value but before a boundary shows up,
 //   what happens to them?
+/**
+ * The {@code MultipartForm} class.
+ */
 public final class MultipartForm implements RequestBody {
 
     private final HashMap<String, byte[]> data = new HashMap<>();
     private String boundary = null;
 
+    /**
+     * Returns the result of {@code add}.
+     *
+     * @param key the key
+     * @param value the value
+     * @return the result
+     */
     public MultipartForm add(final String key, final byte[] value) {
         // the key goes into a header line verbatim: quotes or newlines would
         // break the part framing or inject extra part headers
@@ -35,6 +45,11 @@ public final class MultipartForm implements RequestBody {
         return this;
     }
 
+    /**
+     * Returns the header.
+     *
+     * @return the result
+     */
     @Override
     public String getHeader() {
         return "multipart/form-data; boundary=" + ensureBoundary();
@@ -62,6 +77,11 @@ public final class MultipartForm implements RequestBody {
     }
 
     private static final byte[] CRLF = "\r\n".getBytes(US_ASCII);
+    /**
+     * Returns the result of {@code build}.
+     *
+     * @return the result
+     */
     @Override
     public HttpRequest.BodyPublisher build() {
         final var out = new ByteArrayOutputStream();
@@ -85,4 +105,10 @@ public final class MultipartForm implements RequestBody {
         }
     }
 
+
+    /**
+     * Creates a new instance.
+     */
+    public MultipartForm() {
+    }
 }
